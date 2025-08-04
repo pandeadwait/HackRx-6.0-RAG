@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
+from dotenv import load_dotenv
+import os
 
 class QueryRequest(BaseModel):
     documents: str          
@@ -8,6 +10,8 @@ class QueryRequest(BaseModel):
 
 app = FastAPI()
 
+load_dotenv()
+bearer = os.environ.get('BEARER')
 
 def ingest_and_chunk_document(url: str):
     print(f"Downloading and chunking document from: {url}")
@@ -36,7 +40,7 @@ async def run_submission(
     This function runs when a POST request is sent to your API.
     """
     # Step 1: Check the "password" (the Bearer token)
-    if authorization != "Bearer 7c20ad85e3b6ca51da4782976e45688f64c4546440b6d7cf8ece6a172bfb3f14":
+    if authorization != "Bearer " + bearer:
         raise HTTPException(status_code=401, detail="Incorrect or missing token")
 
     # --- This is the Orchestration Logic ---
