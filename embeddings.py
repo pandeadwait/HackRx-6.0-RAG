@@ -15,7 +15,6 @@ def getEmbeddings(texts):
     
     return INDEX_PATH
 
-#test
 if __name__ == "__main__":
     texts = [
     "The Gemini family of models are the most capable and general models Google has ever built.",

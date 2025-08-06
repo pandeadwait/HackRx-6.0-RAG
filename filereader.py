@@ -12,7 +12,7 @@ def getPdfChunks(filename):
     
     splitter = CharacterTextSplitter(separator = '\n', chunk_size = 1000, chunk_overlap = 200, length_function = len)
 
-    chunks = splitter.spilt_text(text)
+    chunks = splitter.split_text(text)
 
     return chunks
 
@@ -31,12 +31,14 @@ def getDocxChunks(filename):
     return chunks
 
 def chunker(filename):
-    extension = os.path.splitext(filename)[-1].lower()
+    # extension = os.path.splitext(filename)[-1].lower()
     chunks = list()
 
-    if extension == ".pdf":
-        chunk = getPdfChunks(filename)
-    elif extension == '.docx':
-        chunk = getDocxChunks(filename)
+    chunks = getPdfChunks(filename)
+
+    # if extension == ".pdf":
+    #     chunks= getPdfChunks(filename)
+    # elif extension == '.docx':
+    #     chunks = getDocxChunks(filename)
     
     return chunks
