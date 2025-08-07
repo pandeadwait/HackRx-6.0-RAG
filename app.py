@@ -4,7 +4,7 @@ from typing import List, Optional
 from dotenv import load_dotenv
 import os
 import requests
-
+import tempfile
 from filereader import chunker
 from embeddings import getEmbeddings
 from rag_chain import generate_answer
@@ -68,13 +68,23 @@ load_dotenv()
 bearer = os.environ.get("BEARER")
 app = FastAPI()
 
-def download(url, save_as = "downloaded.pdf"):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(save_as, "wb") as f:
-            f.write(response.content)
+# def download(url, save_as = "downloaded.pdf"):
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         with open(save_as, "wb") as f:
+#             f.write(response.content)
 
-        return save_as
+#         return save_as
+
+def download(url):
+    response = requests.get(url)
+
+    # Create a temporary file to store the downloaded content
+    temp_file = tempfile.NamedTemporaryFile(delete=True)
+    temp_file.write(response.content)
+    temp_file.seek(0)  # Rewind to the start of the file
+    return temp_file
+
     
 @app.post("/api/v1/hackrx/run")
 async def main(request: Request):
