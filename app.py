@@ -3,12 +3,15 @@ from pydantic import BaseModel
 from typing import List, Optional
 from dotenv import load_dotenv
 import os
+import io
 import requests
 import tempfile
 from filereader import chunker
 from embeddings import getEmbeddings
 from rag_chain import generate_answer
 from retriever import get_relevant_chunks
+from typing import List, Union, BinaryIO
+
 # class QueryRequest(BaseModel):
 #     documents: str          
 #     questions: List[str]    
@@ -76,15 +79,29 @@ app = FastAPI()
 
 #         return save_as
 
-def download(url):
-    response = requests.get(url)
+# def download(url):
+#     response = requests.get(url)
 
-    # Create a temporary file to store the downloaded content
-    temp_file = tempfile.NamedTemporaryFile(delete=True)
-    temp_file.write(response.content)
-    temp_file.seek(0)  # Rewind to the start of the file
-    return temp_file
+#     # Create a temporary file to store the downloaded content
+#     temp_file = tempfile.NamedTemporaryFile(delete=True)
+#     temp_file.write(response.content)
+#     temp_file.seek(0)  # Rewind to the start of the file
+#     return temp_file
 
+
+def download(url: str) -> Union[io.BytesIO, None]:
+    """
+    Downloads a file from a URL and returns it as an in-memory binary object.
+    This avoids saving anything to disk.
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        # Return the content wrapped in an in-memory bytes buffer
+        return io.BytesIO(response.content)
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading file from {url}: {e}")
+        return None
     
 @app.post("/api/v1/hackrx/run")
 async def main(request: Request):
@@ -95,7 +112,6 @@ async def main(request: Request):
     
     print(document)
 
-    return {"name" : "allah"}
     file = download(document)
 
     chunks = chunker(file)
