@@ -10,7 +10,7 @@ def getPdfChunks(filename):
     for page in pages.pages:
         text += page.extract_text()
     
-    splitter = CharacterTextSplitter(separator = '\n', chunk_size = 1000, chunk_overlap = 200, length_function = len)
+    splitter = CharacterTextSplitter(separator = '\n', chunk_size = 500, chunk_overlap = 250, length_function = len)
 
     chunks = splitter.split_text(text)
 
@@ -24,7 +24,7 @@ def getDocxChunks(filename):
     for paragraph in paragraphs:
         text += paragraph
 
-    splitter = CharacterTextSplitter(separator = '\n', chunk_size = 1000, chunk_overlap = 200, length_function = len)
+    splitter = CharacterTextSplitter(separator = '\n', chunk_size = 500, chunk_overlap = 200, length_function = len)
 
     chunks = splitter.split_text(text)
 

@@ -82,10 +82,7 @@ async def main(request: Request):
     
     document = data['documents']
     questions = data['questions']
-    
-    print(document)
 
-    return {"name" : "allah"}
     file = download(document)
 
     chunks = chunker(file)
@@ -98,4 +95,4 @@ async def main(request: Request):
     
     print(answers)
 
-    return {"You sent" : data}
+    return {"answers" : answers}
